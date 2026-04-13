@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiTags } from '@nestjs/swagger';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { Response } from 'express';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -19,9 +20,15 @@ export class AuthController {
 
     @Public()
     @Get('verify-email')
-    async verifyEmail(@Query('token') token: string) {
+    async verifyEmail(@Query('token') token: string, @Res() res: Response) {
         const result = await this.authService.verifyEmail(token);
-        return result;
+
+        const redirectUrl =
+            `${process.env.FRONTEND_URL}/auth/callback` +
+            `?accessToken=${encodeURIComponent(result.access_token)}` +
+            `&refreshToken=${encodeURIComponent(result.refresh_token)}`;
+
+        return res.redirect(redirectUrl);
     }
 
     @Public()

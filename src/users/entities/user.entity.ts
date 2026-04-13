@@ -6,54 +6,54 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 @Entity('users')
 export class User {
   @Column()
-  full_name: string;
+  full_name !: string;
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id !: string;
 
   @Column({ unique: true })
-  email: string;
+  email !: string;
 
   @Column()
-  password: string;
+  password !: string;
 
   @Column({
     type: 'enum',
     enum: AuthMethod,
     default: AuthMethod.EMAIL,
   })
-  auth_method: AuthMethod;
+  auth_method !: AuthMethod;
 
   @Column({
     type: 'enum',
     enum: Role,
   })
-  role: Role;
+  role !: Role;
 
   @Column({
     type: 'enum',
     enum: UserStatus,
     default: UserStatus.PENDING,
   })
-  status: UserStatus;
+  status !: UserStatus;
 
   @Column({ type: 'timestamp', nullable: true })
-  email_verified_at: Date | null;
+  email_verified_at !: Date | null;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
 
   @Column({ type: 'text', nullable: true })
-  verification_token: string | null;
+  verification_token!: string | null;
 
   @Column({ type: 'timestamp', nullable: true })
-  verification_token_expires_at: Date | null;
+  verification_token_expires_at!: Date | null;
 
   @Column({ type: 'text', nullable: true })
-  refresh_token: string | null;
+  refresh_token!: string | null;
 
   @Column({ type: 'timestamp', nullable: true })
-  refresh_token_expires_at: Date | null;
+  refresh_token_expires_at!: Date | null;
 }

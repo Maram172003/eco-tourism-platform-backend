@@ -5,14 +5,14 @@ import { Role } from 'src/common/enums/roles.enum';
 export class CreateUserDto {
 
   @IsNotEmpty()
-  full_name: string;
+  full_name !: string;
   @IsEmail()
-  email: string;
+  email !: string;
 
   @IsNotEmpty()
   @MinLength(6)
-  password: string;
+  password !: string;
 
   @IsEnum(Role)
-  role: Role;
+  role !: Role;
 }

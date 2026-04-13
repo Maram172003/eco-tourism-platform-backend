@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './dto/login.dto';
@@ -7,11 +7,14 @@ import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { randomBytes } from 'crypto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { MailService } from 'src/mail/mail.service';
+
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly usersService: UsersService,
+        private readonly mailService: MailService,
         private readonly jwtService: JwtService,
     ) { }
 
@@ -40,17 +43,35 @@ export class AuthService {
             expiresAt,
         );
 
+        await this.mailService.sendVerificationEmail(user.email, verificationToken);
+
         return {
-            message: 'User created. Please verify your email.',
-            verification_token: verificationToken,
+            message: 'User created. Verification email sent.',
         };
     }
 
     async verifyEmail(token: string) {
+
         const user = await this.usersService.activateUserByToken(token);
 
+        if (!user) {
+            throw new NotFoundException('Invalid verification token');
+        }
+
+        const accessToken = await this.generateAccessToken(user);
+
+        const refreshToken = this.generateRefreshToken();
+        const refreshExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
+
+        await this.usersService.saveRefreshToken(
+            user.id,
+            refreshToken,
+            refreshExpiresAt,
+        );
+
         return {
-            message: 'Email verified successfully',
+            access_token: accessToken,
+            refresh_token: refreshToken,
             user,
         };
     }

@@ -10,14 +10,14 @@ export class RegisterDto {
     minLength: 5,
   })
   @IsNotEmpty()
-  full_name: string;
+  full_name !: string;
 
   @ApiProperty({
     example: 'test@example.com',
     description: 'Email de l’utilisateur',
   })
   @IsEmail()
-  email: string;
+  email !: string;
 
   @ApiProperty({
     example: 'Azerty123!',
@@ -26,7 +26,7 @@ export class RegisterDto {
   })
   @IsNotEmpty()
   @MinLength(6)
-  password: string;
+  password !: string;
 
   @ApiProperty({
     example: 'eco_traveler',
@@ -34,5 +34,5 @@ export class RegisterDto {
     description: 'Rôle de l’utilisateur',
   })
   @IsEnum(Role)
-  role: Role;
+  role !: Role;
 }
