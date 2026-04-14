@@ -1,7 +1,8 @@
-import { AuthMethod } from "src/common/enums/auth-method.enum";
-import { Role } from "src/common/enums/roles.enum";
-import { UserStatus } from "src/common/enums/user-status.enum";
+
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { AuthMethod } from "../../common/enums/auth-method.enum";
+import { Role } from "../../common/enums/roles.enum";
+import { UserStatus } from "../../common/enums/user-status.enum";
 
 @Entity('users')
 export class User {

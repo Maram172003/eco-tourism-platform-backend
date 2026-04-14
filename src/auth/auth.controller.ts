@@ -1,11 +1,12 @@
-import { Body, Controller, Get, Post, Query, Req, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import { Public } from 'src/common/decorators/public.decorator';
 import { ApiTags } from '@nestjs/swagger';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { Response } from 'express';
+import { Public } from '../common/decorators/public.decorator';
+import { GoogleAuthGuard } from '../common/guards/google-auth.guard';
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
@@ -26,7 +27,14 @@ export class AuthController {
         const redirectUrl =
             `${process.env.FRONTEND_URL}/auth/callback` +
             `?accessToken=${encodeURIComponent(result.access_token)}` +
-            `&refreshToken=${encodeURIComponent(result.refresh_token)}`;
+            `&refreshToken=${encodeURIComponent(result.refresh_token)}` +
+            `&user=${encodeURIComponent(JSON.stringify({
+                id: result.user.id,
+                email: result.user.email,
+                role: result.user.role,
+                status: result.user.status,
+                full_name: result.user.full_name,
+            }))}`;
 
         return res.redirect(redirectUrl);
     }
@@ -50,4 +58,31 @@ export class AuthController {
         const result = await this.authService.logout(req.user.sub);
         return result;
     }
+    @Public()
+    @Get('google')
+    @UseGuards(GoogleAuthGuard)
+    async googleAuth() { }
+
+    @Public()
+    @Get('google/callback')
+    @UseGuards(GoogleAuthGuard)
+    async googleAuthCallback(@Req() req: any, @Res() res: Response) {
+        const result = await this.authService.googleLogin(req.user);
+
+        const redirectUrl =
+            `${process.env.FRONTEND_URL}/auth/callback` +
+            `?accessToken=${encodeURIComponent(result.access_token)}` +
+            `&refreshToken=${encodeURIComponent(result.refresh_token)}` +
+            `&user=${encodeURIComponent(JSON.stringify({
+                id: result.user.id,
+                email: result.user.email,
+                role: result.user.role,
+                status: result.user.status,
+                full_name: result.user.full_name,
+            }))}`;
+
+        return res.redirect(redirectUrl);
+    }
+
+
 }

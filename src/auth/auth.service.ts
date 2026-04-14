@@ -1,13 +1,15 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from 'src/users/users.service';
 import { LoginDto } from './dto/login.dto';
-import { UserStatus } from 'src/common/enums/user-status.enum';
 import * as bcrypt from 'bcrypt';
 import { RegisterDto } from './dto/register.dto';
 import { randomBytes } from 'crypto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { MailService } from 'src/mail/mail.service';
+import { UsersService } from '../users/users.service';
+import { MailService } from '../mail/mail.service';
+import { UserStatus } from '../common/enums/user-status.enum';
+import { Role } from '../common/enums/roles.enum';
+
 
 
 @Injectable()
@@ -156,6 +158,36 @@ export class AuthService {
 
         return {
             message: 'Logout successful',
+        };
+    }
+
+    async googleLogin(googleUser: any) {
+        let user = await this.usersService.findByEmail(googleUser.email);
+
+        if (!user) {
+            user = await this.usersService.create({
+                email: googleUser.email,
+                full_name: googleUser.full_name,
+                password: '', 
+                role: Role.ECO_TRAVELER,
+            });
+        }
+
+        const accessToken = await this.generateAccessToken(user);
+
+        const refreshToken = this.generateRefreshToken();
+        const refreshExpiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
+
+        await this.usersService.saveRefreshToken(
+            user.id,
+            refreshToken,
+            refreshExpiresAt,
+        );
+
+        return {
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            user,
         };
     }
 }

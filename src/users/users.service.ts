@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserStatus } from 'src/common/enums/user-status.enum';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { CreateUserDto } from './dto/create-user.dto';
-import { AuthMethod } from 'src/common/enums/auth-method.enum';
+import { AuthMethod } from '../common/enums/auth-method.enum';
+import { UserStatus } from '../common/enums/user-status.enum';
+
 
 @Injectable()
 export class UsersService {
