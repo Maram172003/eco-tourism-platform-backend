@@ -75,6 +75,7 @@ export class AuthService {
             access_token: accessToken,
             refresh_token: refreshToken,
             user,
+            dashboard: this.getDashboardPathByRole(user.role),
         };
     }
 
@@ -128,6 +129,7 @@ export class AuthService {
             access_token: accessToken,
             refresh_token: refreshToken,
             user,
+            dashboard: this.getDashboardPathByRole(user.role),
         };
     }
 
@@ -168,7 +170,7 @@ export class AuthService {
             user = await this.usersService.create({
                 email: googleUser.email,
                 full_name: googleUser.full_name,
-                password: '', 
+                password: '',
                 role: Role.ECO_TRAVELER,
             });
         }
@@ -188,6 +190,22 @@ export class AuthService {
             access_token: accessToken,
             refresh_token: refreshToken,
             user,
+            dashboard: this.getDashboardPathByRole(user.role),
         };
+    }
+
+    private getDashboardPathByRole(role: Role): string {
+        switch (role) {
+            case Role.ECO_TRAVELER:
+                return '/dashboard/ecovoyageur';
+            case Role.GUIDE:
+                return '/dashboard/guide';
+            case Role.ADMIN:
+                return '/dashboard/admin';
+            case Role.PROJECT:
+                return '/dashboard/projectowner';
+            default:
+                return '/dashboard';
+        }
     }
 }

@@ -28,6 +28,7 @@ export class AuthController {
             `${process.env.FRONTEND_URL}/auth/callback` +
             `?accessToken=${encodeURIComponent(result.access_token)}` +
             `&refreshToken=${encodeURIComponent(result.refresh_token)}` +
+            `&dashboard=${encodeURIComponent(result.dashboard)}` +
             `&user=${encodeURIComponent(JSON.stringify({
                 id: result.user.id,
                 email: result.user.email,
