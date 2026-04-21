@@ -1,0 +1,31 @@
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import {
+  Answer,
+  Question,
+  QuestionCategory,
+  Questionnaire,
+  QuestionnaireAttempt,
+  UserAnswer,
+} from './entities/questionnaire.entities';
+import { QuestionnaireService } from './questionnaire.service';
+import { QuestionnaireController } from './questionnaire.controller';
+import { EcoTravelerModule } from '../eco-traveler/eco-traveler.module';
+
+@Module({
+  imports: [
+    TypeOrmModule.forFeature([
+      Questionnaire,
+      QuestionCategory,
+      Question,
+      Answer,
+      QuestionnaireAttempt,
+      UserAnswer,
+    ]),
+    EcoTravelerModule,
+  ],
+  providers: [QuestionnaireService],
+  controllers: [QuestionnaireController],
+  exports: [QuestionnaireService],
+})
+export class QuestionnaireModule {}

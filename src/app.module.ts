@@ -8,6 +8,10 @@ import { ConfigModule } from './config/config.module';
 import { MailModule } from './mail/mail.module';
 import { GoogleStrategy } from './auth/strategies/google.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { MongodbModule } from './database/mongodb.module';
+import { EcoTravelerModule } from './eco-traveler/eco-traveler.module';
+import { QuestionnaireModule } from './questionnaire/questionnaire.module';
+
 
 
 
@@ -20,7 +24,10 @@ import { PassportModule } from '@nestjs/passport';
     UsersModule,
     AuthModule,
     MailModule,
-    PassportModule
+    PassportModule,
+    MongodbModule,
+    EcoTravelerModule,
+    QuestionnaireModule
   ],
   providers: [GoogleStrategy],
 })
