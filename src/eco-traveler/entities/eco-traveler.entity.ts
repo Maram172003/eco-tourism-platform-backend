@@ -62,10 +62,23 @@ export class EcoTraveler {
 
   @Column({ type: 'int', nullable: true })
   sustainability_score!: number | null;
-
+ 
+  
+  @Column({ type: 'int', nullable: true })
+  score_questionnaire!: number | null;  // 20% — score brut du QCM (0-100)
+ 
+  @Column({ type: 'int', default: 0 })
+  score_reservations!: number;          // 40% — rempli au Sprint 4
+ 
+  @Column({ type: 'int', default: 0 })
+  score_feedbacks!: number;             // 20% — rempli au Sprint 8
+ 
+  @Column({ type: 'int', default: 0 })
+  score_partages!: number;              // 20% — rempli au Sprint 7
+ 
   @CreateDateColumn()
   created_at!: Date;
-
+ 
   @UpdateDateColumn()
   updated_at!: Date;
 }

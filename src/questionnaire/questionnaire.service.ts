@@ -143,8 +143,8 @@ export class QuestionnaireService {
 
     await this.attemptRepo.save(savedAttempt);
 
-    // 8. Mettre à jour le score dans le profil écovoyageur (PostgreSQL + MongoDB)
-    await this.ecoTravelerService.updateScore(userId, percentage);
+    // 8. Mettre à jour le composant questionnaire (20%) et recalculer le score final
+    await this.ecoTravelerService.updateQuestionnaireScore(userId, percentage);
 
     return {
       attempt_id: savedAttempt.id,
