@@ -11,7 +11,11 @@ import { RolesGuard } from './common/guards/roles.guard';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: true,
+    bodyParser: true,
   });
+
+  app.use(require('express').json({ limit: '5mb' }));
+  app.use(require('express').urlencoded({ limit: '5mb', extended: true }));
 
   app.enableCors({
     origin: ['http://localhost:3000', 'http://localhost:3001'],

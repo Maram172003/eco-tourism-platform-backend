@@ -6,8 +6,8 @@ import { UserStatus } from "../../common/enums/user-status.enum";
 
 @Entity('users')
 export class User {
-  @Column()
-  full_name !: string;
+  @Column({ nullable: true })
+  full_name?: string;
   @PrimaryGeneratedColumn('uuid')
   id !: string;
 
@@ -57,4 +57,10 @@ export class User {
 
   @Column({ type: 'timestamp', nullable: true })
   refresh_token_expires_at!: Date | null;
+
+  @Column({ type: 'text', nullable: true })
+  reset_password_token!: string | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  reset_password_token_expires_at!: Date | null;
 }

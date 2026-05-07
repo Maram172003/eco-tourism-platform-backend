@@ -27,6 +27,15 @@ export class EcoTravelerService {
       this.mongoService.getEngagement(userId),
     ]);
 
+    // Recalcule et sauvegarde la completion si elle a changé
+    if (sqlProfile) {
+      const freshCompletion = this.calculateCompletion(sqlProfile);
+      if (freshCompletion !== sqlProfile.profile_completion) {
+        sqlProfile.profile_completion = freshCompletion;
+        await this.repo.save(sqlProfile);
+      }
+    }
+
     return {
       // ── PostgreSQL : source de vérité ──────────────────────────────
       user_id: sqlProfile?.user_id,
@@ -43,6 +52,10 @@ export class EcoTravelerService {
       travel_styles: sqlProfile?.travel_styles,
       sustainability_goals: sqlProfile?.sustainability_goals,
       sustainability_score: sqlProfile?.sustainability_score,
+      score_questionnaire: sqlProfile?.score_questionnaire ?? null,
+      score_reservations: sqlProfile?.score_reservations ?? 0,
+      score_feedbacks: sqlProfile?.score_feedbacks ?? 0,
+      score_partages: sqlProfile?.score_partages ?? 0,
       profile_completion: sqlProfile?.profile_completion,
       is_onboarded: sqlProfile?.is_onboarded,
 

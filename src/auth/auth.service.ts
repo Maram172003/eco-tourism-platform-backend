@@ -33,7 +33,7 @@ export class AuthService {
             email: dto.email,
             password: hashedPassword,
             role: dto.role,
-            full_name: dto.full_name,
+            full_name: dto.full_name ?? "",
         });
 
         const verificationToken = randomBytes(32).toString('hex');
@@ -163,6 +163,35 @@ export class AuthService {
         };
     }
 
+    async forgotPassword(email: string) {
+        const user = await this.usersService.findByEmail(email);
+        // On ne révèle pas si l'email existe ou non
+        if (!user) return { message: 'Si cet email existe, un lien de réinitialisation a été envoyé.' };
+
+        const token = randomBytes(32).toString('hex');
+        const expiresAt = new Date(Date.now() + 1000 * 60 * 60); // 1h
+
+        await this.usersService.saveResetToken(user.id, token, expiresAt);
+        await this.mailService.sendPasswordResetEmail(user.email, token);
+
+        return { message: 'Si cet email existe, un lien de réinitialisation a été envoyé.' };
+    }
+
+    async resetPassword(token: string, newPassword: string) {
+        const user = await this.usersService.findByResetToken(token);
+
+        if (!user) throw new BadRequestException('Lien invalide ou expiré.');
+
+        if (!user.reset_password_token_expires_at || user.reset_password_token_expires_at < new Date()) {
+            throw new BadRequestException('Lien expiré. Veuillez refaire une demande.');
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await this.usersService.updatePassword(user.id, hashedPassword);
+
+        return { message: 'Mot de passe réinitialisé avec succès.' };
+    }
+
     async googleLogin(googleUser: any) {
         let user = await this.usersService.findByEmail(googleUser.email);
 
@@ -203,7 +232,7 @@ export class AuthService {
             case Role.ADMIN:
                 return '/dashboard/admin';
             case Role.PROJECT:
-                return '/dashboard/projectowner';
+                return '/dashboard/project-owner';
             default:
                 return '/dashboard';
         }

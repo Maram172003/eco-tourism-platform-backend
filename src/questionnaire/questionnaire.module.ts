@@ -11,6 +11,8 @@ import {
 import { QuestionnaireService } from './questionnaire.service';
 import { QuestionnaireController } from './questionnaire.controller';
 import { EcoTravelerModule } from '../eco-traveler/eco-traveler.module';
+import { GuideModule } from '../guide/guide.module';
+import { ProjectOwnerModule } from '../project-owner/project-owner.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { EcoTravelerModule } from '../eco-traveler/eco-traveler.module';
       UserAnswer,
     ]),
     EcoTravelerModule,
+    GuideModule,
+    ProjectOwnerModule,
   ],
   providers: [QuestionnaireService],
   controllers: [QuestionnaireController],

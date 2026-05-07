@@ -147,6 +147,27 @@ export class UsersService {
 
         return user;
     }
+    async saveResetToken(userId: string, token: string, expiresAt: Date) {
+        const user = await this.findById(userId);
+        if (!user) throw new NotFoundException('User not found');
+        user.reset_password_token = token;
+        user.reset_password_token_expires_at = expiresAt;
+        return await this.repo.save(user);
+    }
+
+    async findByResetToken(token: string) {
+        return await this.repo.findOne({ where: { reset_password_token: token } });
+    }
+
+    async updatePassword(userId: string, hashedPassword: string) {
+        const user = await this.findById(userId);
+        if (!user) throw new NotFoundException('User not found');
+        user.password = hashedPassword;
+        user.reset_password_token = null;
+        user.reset_password_token_expires_at = null;
+        return await this.repo.save(user);
+    }
+
     async removeRefreshToken(userId: string) {
         const user = await this.findById(userId);
 

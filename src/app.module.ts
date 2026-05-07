@@ -11,6 +11,8 @@ import { PassportModule } from '@nestjs/passport';
 import { MongodbModule } from './database/mongodb.module';
 import { EcoTravelerModule } from './eco-traveler/eco-traveler.module';
 import { QuestionnaireModule } from './questionnaire/questionnaire.module';
+import { GuideModule } from './guide/guide.module';
+import { ProjectOwnerModule } from './project-owner/project-owner.module';
 
 
 
@@ -27,7 +29,9 @@ import { QuestionnaireModule } from './questionnaire/questionnaire.module';
     PassportModule,
     MongodbModule,
     EcoTravelerModule,
-    QuestionnaireModule
+    QuestionnaireModule,
+    GuideModule,
+    ProjectOwnerModule,
   ],
   providers: [GoogleStrategy],
 })
